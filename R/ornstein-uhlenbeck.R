@@ -1,33 +1,33 @@
 # Simulate from an Ornstein–Uhlenbeck Process seeing it as a Markov Process.
 
 # First algorithm. Direct from transition functions.
-ornstein.uhlenbeck <- function(n, t, mu = 0, tau = 1, alpha = 1){
+ornstein.uhlenbeck <- function(n, t, mu = 0, tau = 1, alpha = 1, x0 = NULL){
     X <- numeric(n+1)
-    X[1] <- rnorm(n = 1, mean = mu, sd = sqrt(tau))
+    X[1] <- ifelse(is.null(x0), rnorm(n = 1, mean = mu, sd = sqrt(tau)), x0)
     for(i in 1:n){
         X[i+1] <- rnorm(
             n = 1,
-            mean = X[i] * exp(-alpha * t) + mu * (1 - exp(-alpha * t)),
-            sd = sqrt(tau * (1 - exp(-2 * alpha * t)))
+            mean = X[i] * exp(-alpha * (t[i+1] - t[i])) + mu * (1 - exp(-alpha * (t[i+1] - t[i]))),
+            sd = sqrt(tau * (1 - exp(-2 * alpha * (t[i+1] - t[i]))))
         )
     }
     return(X)
 }
 
 # Second algorithm, seeing that the transition function can be seen as a mixture.
-ornstein.uhlenbeck.aum <- function(n, t, mu = 0, tau = 1, alpha = 1){
+ornstein.uhlenbeck.aum <- function(n, t, mu = 0, tau = 1, alpha = 1, x0 = NULL){
     X <- numeric(n+1)
-    X[1] <- rnorm(n = 1, mean = mu, sd = sqrt(tau))
+    X[1] <- ifelse(is.null(x0), rnorm(n = 1, mean = mu, sd = sqrt(tau)), x0)
     for(i in 1:n){
         aux <- rnorm(
             n = 1,
             mean = X[i],
-            sd = sqrt(tau * (exp(alpha * t) - 1))
+            sd = sqrt(tau * (exp(alpha * (t[i+1] - t[i])) - 1))
         )
         X[i+1] <- rnorm(
             n = 1,
-            mean = aux * exp(-alpha * t) + mu * (1 - exp(-alpha * t)),
-            sd = sqrt(tau * (1 - exp(- alpha * t)))
+            mean = aux * exp(-alpha * (t[i+1] - t[i])) + mu * (1 - exp(-alpha * (t[i+1] - t[i]))),
+            sd = sqrt(tau * (1 - exp(- alpha * (t[i+1] - t[i]))))
         )
     }
     return(X)
