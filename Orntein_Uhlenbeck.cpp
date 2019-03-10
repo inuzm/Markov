@@ -143,10 +143,10 @@ NumericMatrix ornstein_uhlenbeck_ede(NumericVector tspan, double mu, double tau,
     
     //Create auxiliary variables
     dt       = tspan(i + 1) - tspan(i);
-    Z        = rnorm(nsim, 0, 1);        
+    Z        = rnorm(nsim, 0, dt);        
     
     //Simulate normal transition
-    X(_, i + 1) = X(_, i) + alpha*(mu - X(_, i))*dt + sqrt(2 * alpha * tau * dt)*Z;
+    X(_, i + 1) = X(_, i) + alpha*(mu - X(_, i)) * dt + sqrt(2 * alpha * tau) * Z;
     
   }
   
