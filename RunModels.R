@@ -23,6 +23,7 @@ rm(list = ls())
 library("ggplot2")
 library("gridExtra")
 library("Rcpp")
+library("latex2exp")
 
 #Source cpp functions
 sourceCpp("cpp/Orntein_Uhlenbeck.cpp")
